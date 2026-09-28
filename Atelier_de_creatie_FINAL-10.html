@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier de creație</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#fff8df;color:#302434}
+header{background:#9d4f78;color:#fff;padding:22px 18px 20px;border-radius:0 0 30px 30px;text-align:center}
+h1{margin:0 0 10px;font-size:30px}.stats{font-size:19px;font-weight:bold}
+nav{display:flex;gap:9px;padding:16px 12px;justify-content:center;flex-wrap:wrap}
+button{border:0;border-radius:22px;padding:13px 17px;font-size:16px;font-weight:bold;background:#ad5d88;color:#fff}
+button.active{outline:4px solid #f0c8dc}
+main{max-width:700px;margin:auto;padding:8px 18px 35px}
+.card{background:#fff;border-radius:28px;padding:22px;margin:14px 0;box-shadow:0 5px 18px #00000012}
+h2{font-size:25px;margin-top:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{background:#fff4f8;border:2px solid #efd6e2;color:#3a2937;border-radius:20px;padding:16px;text-align:center}
+.option.selected{border-color:#9d4f78;background:#f5d8e8}
+.emoji{font-size:45px;display:block;margin-bottom:8px}
+label{display:block;font-weight:bold;margin:14px 0 6px}
+input,select{width:100%;padding:13px;border-radius:14px;border:2px solid #e2cbd7;font-size:16px;background:#fff}
+.result{font-size:70px;text-align:center;padding:12px}
+.success{background:#eaf8e7;border-radius:18px;padding:14px;margin-top:14px;display:none}
+.item{padding:16px;border:2px solid #efd6e2;border-radius:22px;margin:12px 0;background:#fffafd}
+.creation-card{background:linear-gradient(145deg,#fff7fb,#f8e8f2);border:3px solid #efd1e0;border-radius:26px;padding:18px;text-align:center;margin:12px 0}
+.creation-art{font-size:88px;padding:12px}.creation-name{font-size:22px;font-weight:bold}
+.creation-info{margin:7px 0 14px}.share{width:100%;margin-top:10px;background:#8b56b5}
+.danger{background:#fff0f0;color:#8d3030;width:100%;margin-top:8px}
+.small{color:#746b73;font-size:14px}.empty{text-align:center;color:#776f76;padding:20px}
+.flower-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.flower{background:#fff4f8;border:2px solid #efd6e2;color:#3a2937;border-radius:18px;padding:14px 6px}
+.flower.selected{background:#f2d5e6;border-color:#9d4f78}
+.info{background:#fff3c9;border-radius:18px;padding:15px;line-height:1.5}
+@media(max-width:450px){.grid{grid-template-columns:1fr}.flower-grid{grid-template-columns:1fr 1fr}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header>
+<h1>✨ Atelier de creație</h1>
+<div class="stats">💰 <span id="coins">2100</span> monede &nbsp; ⭐ <span id="xp">1000</span> XP</div>
+</header>
+
+<nav>
+<button onclick="showTab('atelier')" id="bAtelier">🎨 Atelier</button>
+<button onclick="showTab('colectie')" id="bColectie">👗 Colecția mea</button>
+<button onclick="showTab('galerie')" id="bGalerie">🌟 Galerie</button>
+<button onclick="showTab('finalizare')" id="bFinalizare">🏆 Finalizare</button>
+</nav>
+
+<main>
+<section id="atelier" class="card">
+<h2>🎨 Atelierul tău</h2>
+<div class="info">Creațiile tale sunt păstrate pe telefon. Nu trebuie să le refaci. Alege o categorie doar dacă vrei să creezi ceva nou.</div>
+
+<label>Categorie</label>
+<div class="grid" id="categories">
+<div class="option selected" data-cat="femei" onclick="chooseCat(this)"><span class="emoji">👗</span>Femei</div>
+<div class="option" data-cat="barbati" onclick="chooseCat(this)"><span class="emoji">👔</span>Bărbați</div>
+<div class="option" data-cat="copii" onclick="chooseCat(this)"><span class="emoji">🧒</span>Copii</div>
+<div class="option" data-cat="flori" onclick="chooseCat(this)"><span class="emoji">💐</span>Flori</div>
+</div>
+
+<label>Model</label><select id="model"></select>
+<label>Culoare</label>
+<select id="color">
+<option>Verde smarald</option><option>Roz pudrat</option><option>Bleumarin</option>
+<option>Albastru</option><option>Roșu</option><option>Mov</option><option>Alb</option><option>Negru</option>
+</select>
+
+<div id="flowerArea" style="display:none">
+<label>🌷 Flori</label>
+<div class="flower-grid" id="flowers">
+<button class="flower" data-value="🌹 Trandafiri" onclick="toggleFlower(this)">🌹 Trandafiri</button>
+<button class="flower" data-value="🌷 Lalele" onclick="toggleFlower(this)">🌷 Lalele</button>
+<button class="flower" data-value="🌻 Floarea-soarelui" onclick="toggleFlower(this)">🌻 Floarea-soarelui</button>
+<button class="flower" data-value="🌸 Bujori" onclick="toggleFlower(this)">🌸 Bujori</button>
+<button class="flower" data-value="💜 Lavandă" onclick="toggleFlower(this)">💜 Lavandă</button>
+<button class="flower" data-value="🌺 Flori exotice" onclick="toggleFlower(this)">🌺 Flori exotice</button>
+</div></div>
+
+<label>Numele creației (opțional)</label>
+<input id="name" placeholder="Ex.: Rochia mea de seară">
+<div class="result" id="preview">👗</div>
+<button style="width:100%" onclick="createItem()">✨ Creează și salvează</button>
+<div class="success" id="success"></div>
+</section>
+
+<section id="colectie" class="card" style="display:none">
+<h2>👗 Colecția mea</h2>
+<p class="small">Aici sunt creațiile deja salvate. Nu este nevoie să le creezi din nou.</p>
+<div id="collection"></div>
+</section>
+
+<section id="galerie" class="card" style="display:none">
+<h2>🌟 Galeria creațiilor</h2>
+<p class="small">Folosește „Distribuie creația” pentru a trimite o creație prin aplicațiile disponibile pe telefon.</p>
+<div id="gallery"></div>
+</section>
+
+<section id="finalizare" class="card" style="display:none">
+<h2>🏆 Atelier finalizat</h2>
+<div class="info">Creațiile tale rămân salvate pe telefon. Nu trebuie să le refaci. Poți reveni în Atelier pentru o creație nouă sau în Colecția mea pentru cele deja păstrate.</div>
+<button style="width:100%;margin-top:12px" onclick="showTab('atelier')">🎨 Înapoi la Atelier</button>
+</section>
+</main>
+
+<script>
+const models={
+femei:[['Rochie de seară','👗'],['Rochie de zi','👗'],['Costum elegant','🧥'],['Fustă și bluză','👚']],
+barbati:[['Ținută elegantă','👔'],['Costum business','🤵'],['Cămașă casual','👕'],['Jachetă','🧥']],
+copii:[['Ținută de școală','🧒'],['Rochiță veselă','👗'],['Costumaș','🧒'],['Hăinuță de joacă','👕']],
+flori:[['Buchet romantic','💐'],['Buchet de primăvară','🌷'],['Aranjament elegant','🌸'],['Cutie cu flori','🌹']]
+};
+
+let cat='femei', selectedFlowers=[];
+let coins=Number(localStorage.getItem('coins')||2100);
+let xp=Number(localStorage.getItem('xp')||1000);
+let items=JSON.parse(localStorage.getItem('atelier_items')||'[]');
+
+function updateStats(){
+ document.getElementById('coins').textContent=coins;
+ document.getElementById('xp').textContent=xp;
+}
+function chooseCat(el){
+ document.querySelectorAll('#categories .option').forEach(x=>x.classList.remove('selected'));
+ el.classList.add('selected'); cat=el.dataset.cat;
+ document.getElementById('flowerArea').style.display=cat==='flori'?'block':'none';
+ selectedFlowers=[]; document.querySelectorAll('.flower').forEach(x=>x.classList.remove('selected'));
+ fillModels();
+}
+function fillModels(){
+ let s=document.getElementById('model'); s.innerHTML='';
+ models[cat].forEach((m,i)=>{let o=document.createElement('option');o.value=i;o.textContent=m[0];s.appendChild(o)});
+ updatePreview();
+}
+function updatePreview(){
+ let m=models[cat][Number(document.getElementById('model').value)||0];
+ document.getElementById('preview').textContent=m[1];
+}
+document.getElementById('model').addEventListener('change',updatePreview);
+function toggleFlower(btn){
+ btn.classList.toggle('selected'); const f=btn.dataset.value;
+ if(selectedFlowers.includes(f)) selectedFlowers=selectedFlowers.filter(x=>x!==f);
+ else selectedFlowers.push(f);
+}
+function createItem(){
+ const idx=Number(document.getElementById('model').value)||0, m=models[cat][idx];
+ const name=document.getElementById('name').value.trim()||m[0];
+ const color=document.getElementById('color').value;
+ const flowers=cat==='flori'?(selectedFlowers.length?selectedFlowers:['🌷 Lalele']):[];
+ const item={id:Date.now(),name,cat,model:m[0],emoji:m[1],color,flowers};
+ items.unshift(item); coins+=50; xp+=25;
+ localStorage.setItem('atelier_items',JSON.stringify(items));
+ localStorage.setItem('coins',coins); localStorage.setItem('xp',xp);
+ document.getElementById('success').style.display='block';
+ document.getElementById('success').textContent='🎉 „'+name+'” a fost salvată! +50 monede și +25 XP.';
+ document.getElementById('name').value='';
+ updateStats(); render();
+}
+function shareItem(id){
+ const x=items.find(i=>i.id===id); if(!x)return;
+ const flowers=x.flowers&&x.flowers.length?'\\n🌷 '+x.flowers.join(', '):'';
+ const text='✨ Atelier de creație ✨\\nAm creat: '+x.name+'\\n'+x.model+' • '+x.color+flowers;
+ if(navigator.share) navigator.share({title:'Creația mea',text:text}).catch(()=>{});
+ else {navigator.clipboard?.writeText(text); alert('Descrierea creației a fost copiată.');}
+}
+function card(x){
+ const flowers=x.flowers&&x.flowers.length?'<div>🌷 '+x.flowers.join(' • ')+'</div>':'';
+ return '<div class="creation-card"><div class="creation-art">'+x.emoji+'</div><div class="creation-name">'+x.name+'</div><div class="creation-info">'+x.model+' • '+x.color+'</div>'+flowers+'<button class="share" onclick="shareItem('+x.id+')">📤 Distribuie creația</button></div>';
+}
+function render(){
+ let c=document.getElementById('collection'),g=document.getElementById('gallery');
+ if(!items.length){
+  c.innerHTML='<div class="empty">Nu există creații salvate.</div>';
+  g.innerHTML='<div class="empty">Galeria este goală.</div>'; return;
+ }
+ c.innerHTML=items.map(card).join('');
+ g.innerHTML=items.map(card).join('');
+}
+let currentTab='atelier';
+let atelierHistoryReady=false;
+
+function showTab(t, addHistory=true){
+  currentTab=t;
+  ['atelier','colectie','galerie','finalizare'].forEach(x=>document.getElementById(x).style.display=x===t?'block':'none');
+  ['bAtelier','bColectie','bGalerie','bFinalizare'].forEach(x=>document.getElementById(x).classList.remove('active'));
+  document.getElementById(t==='atelier'?'bAtelier':t==='colectie'?'bColectie':t==='galerie'?'bGalerie':'bFinalizare').classList.add('active');
+  render();
+  if(addHistory && atelierHistoryReady) history.pushState({atelierTab:t},'',location.href);
+}
+
+const atelierStartUrl = location.href;
+history.replaceState({atelierTab:'atelier', atelierStart:true},'',atelierStartUrl);
+atelierHistoryReady=true;
+
+window.addEventListener('popstate', function(e){
+  if(e.state && e.state.atelierTab && e.state.atelierTab!=='atelier'){
+    showTab(e.state.atelierTab, false);
+    return;
+  }
+  if(currentTab!=='atelier'){
+    showTab('atelier', false);
+    history.pushState({atelierTab:'atelier', atelierStart:true},'',atelierStartUrl);
+    return;
+  }
+  // Rămânem în fișierul jocului; nu mai apelăm history.back() la Atelier.
+  history.replaceState({atelierTab:'atelier', atelierStart:true},'',atelierStartUrl);
+});
+
+fillModels(); updateStats(); showTab('atelier', false);
+</script>
+</body>
+</html>
