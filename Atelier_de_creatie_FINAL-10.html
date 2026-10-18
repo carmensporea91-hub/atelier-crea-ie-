@@ -196,11 +196,11 @@ history.replaceState({atelierTab:'atelier', atelierStart:true},'',atelierStartUr
 atelierHistoryReady=true;
 
 window.addEventListener('popstate', function(e){
-  if(e.state && e.state.atelierTab && e.state.atelierTab!=='atelier'){
+  if(e.state && e.state.atelierTab && e.state.atelierTab!'atelier'){
     showTab(e.state.atelierTab, false);
     return;
   }
-  if(currentTab!=='atelier'){
+  if(currentTab!'atelier'){
     showTab('atelier', false);
     history.pushState({atelierTab:'atelier', atelierStart:true},'',atelierStartUrl);
     return;
